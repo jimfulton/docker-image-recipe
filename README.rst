@@ -10,7 +10,7 @@ To use, define a ZooKeeper node of type dockerimage::
     /application: dockerimage
       version = 0.1.0 # dockerimage version
       image = localhost:5000/fooimage
-      ports = "8080:8080 9000-9050:8000-80050 20,21: 3000-30039: 8081"
+      ports = "8080:8080 8000-80050:9000-9050 =:20,21 =:3000-30039 8081"
 
 In this example, we're pulling the docker image from a local
 repository.
@@ -23,10 +23,10 @@ forms:
   CONTAINTER_PORTS
     The container ports are mapped to ephemeral host ports
 
-  CONTAINTER_PORTS:
+  =:CONTAINTER_PORTS
     The container ports are mapped to the same ports on the host.
 
-  CONTAINTER_PORTS:HOST_PORTS
+  HOST_PORTS:CONTAINTER_PORTS
     The container ports are mapped to the given host ports. Of course,
     the number of ports must agree.
 
@@ -40,7 +40,7 @@ You can also use::
 
 To map all ports to ephemeral ports and::
 
-  ports = "*:"
+  ports = "=:*"
 
 to map all exposed ports to the same ports on the server.
 
@@ -49,6 +49,8 @@ Any mapped ports must be exposed by the image.
 If no ports option is given, then none of the exposed ports will be
 mapped.
 
+Note that host ports are exposed on all interfaces. In the future,
+support for sepcifying interfaces will likely be added.
 
 If the image defines volumes, some volumes will be automatically
 mapped to deployment-specific locations, **if** they're present in the
