@@ -1,4 +1,4 @@
-Name: 
+Name: dockerimage
 Version: 0
 Release: 1
 
