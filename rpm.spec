@@ -4,8 +4,8 @@ Release: 1
 
 Summary: %{name}
 Group: Applications/ZC
-Requires: cleanpython26
-BuildRequires: cleanpython26
+Requires: cleanpython27
+BuildRequires: cleanpython27
 %define python /opt/cleanpython26/bin/python
 
 ##########################################################################
