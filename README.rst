@@ -93,7 +93,7 @@ container's ``/var/run`` directory is disabled.
 Changes
 *******
 
-0.1.0 (yyyy-mm-dd)
+0.1.0 (2013-11-20)
 ==================
 
 Initial release
