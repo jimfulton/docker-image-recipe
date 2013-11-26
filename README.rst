@@ -79,6 +79,8 @@ Changes
 
 - Made volume mapping purely explicit.
 
+- Start and stop a local registry when pulling.
+
 0.1.0 (2013-11-20)
 ==================
 

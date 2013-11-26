@@ -1,6 +1,7 @@
 import docker
 import json
 import hashlib
+import subprocess
 import zc.metarecipe
 import zc.zk
 
@@ -30,14 +31,36 @@ class ZKRecipe(zc.metarecipe.Recipe):
 
         images = [image for image in client.images(image_name)
                   if image['Tag'] == tag]
+
         if not images:
-            client.pull(image_name, tag=tag)
-            images = [image for image in client.images(image_name)
+            container = client.create_container(
+                'registry',
+                '/docker-registry/run.sh',
+                environment=dict(SETTINGS_FLAVOR='prod'),
+                detach=True,
+                ports=["5000/tcp"])
+            try:
+                client.start(container)
+                try:
+                    port = client.inspect_container(
+                        container
+                        )['NetworkSettings']['PortMapping']['Tcp']['5000']
+                    repo_name = "127.0.0.1:%s/%s" % (port, image_name)
+                    client.pull(repo_name, tag=tag)
+                finally:
+                    client.stop(container)
+            finally:
+                client.remove_container(container)
+
+            images = [image for image in client.images(repo_name)
                       if tag is None or image['Tag'] == tag]
             if not images:
                 raise ValueError("Couldn't pull", image_spec)
+            [image] = images
+            client.tag(image['Id'], image_name, tag)
+        else:
+            [image] = images
 
-        [image] = images
         image = client.inspect_image(image['Id'])['container_config']
 
         run_command = ['/usr/bin/docker', 'run']
