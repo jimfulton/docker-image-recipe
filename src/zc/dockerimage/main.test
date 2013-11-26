@@ -5,6 +5,8 @@ From README.rst::
       version = "0.1.0" # dockerimage version
       image = "localhost:5000/fooimage:1.0"
       ports = "8080:8080 8000-8009:9000-9009 =:20,21 =:3000-3009 8081"
+      /environment
+        url = "http://example.com"
 
 .. -> tree
 
@@ -30,14 +32,15 @@ From README.rst::
      -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 -p 3004:3004
      -p 3005:3005 -p 3006:3006 -p 3007:3007 -p 3008:3008 -p 3009:3009
      -p 8081
-     -v ${deployment:log-directory}:/var/log
-     -v ${deployment:run-directory}:/var/run
+     -v=${deployment:log-directory}:/var/log
+     -v=${deployment:run-directory}:/var/run
+     -e=url=http://example.com
      localhost:5000/fooimage:1.0
     recipe = zc.zdaemonrecipe
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = a1b6daa48f073402c1867562cdcdd4da
+    digest = 49c98202ec121cd660cc1b9a359e1a66
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -52,7 +55,7 @@ Here are some variations that use a short hand for all ports::
 
 .. -> tree
 
-    >>> zk.import_tree(tree)
+    >>> zk.import_tree(tree, trim=True)
     >>> _ = ZKRecipe(Buildout(), 'my,application.0', {})
     ... # doctest: +NORMALIZE_WHITESPACE
     [deployment]
@@ -61,13 +64,13 @@ Here are some variations that use a short hand for all ports::
     user = zope
     [container]
     deployment = deployment
-    program = /usr/bin/docker run -P -v ${deployment:log-directory}:/var/log
-       -v ${deployment:run-directory}:/var/run localhost:5000/fooimage:1.0
+    program = /usr/bin/docker run -P -v=${deployment:log-directory}:/var/log
+       -v=${deployment:run-directory}:/var/run localhost:5000/fooimage:1.0
     recipe = zc.zdaemonrecipe
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = de9b8fa232cf934e079f05f2976c42cd
+    digest = bf3e48d8e8bd97f803890bb109b82361
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -97,14 +100,14 @@ Here are some variations that use a short hand for all ports::
      -p 32:32 -p 8080:8080 -p 8081:8081
      -p 9000:9000 -p 9001:9001 -p 9002:9002 -p 9003:9003 -p 9004:9004
      -p 9005:9005 -p 9006:9006 -p 9007:9007 -p 9008:9008 -p 9009:9009
-     -v ${deployment:log-directory}:/var/log
-     -v ${deployment:run-directory}:/var/run
+     -v=${deployment:log-directory}:/var/log
+     -v=${deployment:run-directory}:/var/run
      localhost:5000/fooimage:1.0
     recipe = zc.zdaemonrecipe
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 54d048bc6b2b0c697aa396a4eeb35927
+    digest = bf0b4201460cddad4f1f30f6f419d0c9
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -125,9 +128,7 @@ We'll get an error if we refer to unexposed ports::
     ...
     AssertionError: ('port not exposed', 42, set([...]))
 
-
 Here's an example with more involved volume mapping::
-
 
   /my
     /application: dockerimage
@@ -155,15 +156,15 @@ Here's an example with more involved volume mapping::
     [container]
     deployment = deployment
     program = /usr/bin/docker run -p 8080
-     -v /mnt/ftp:/home/ftp
-     -v /mnt/svn:/svn
-     -v ${deployment:log-directory}:/var/log/myapp
+     -v=/mnt/ftp:/home/ftp
+     -v=/mnt/svn:/svn
+     -v=${deployment:log-directory}:/var/log/myapp
      localhost:5000/barimage:0.1.0
     recipe = zc.zdaemonrecipe
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 5a2a9d878b9faf86a6fab92d22f80d34
+    digest = 213f74ca15ba8a78abce4d64962d66e6
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc

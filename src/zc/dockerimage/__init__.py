@@ -73,7 +73,15 @@ class ZKRecipe(zc.metarecipe.Recipe):
                 host_volume = zk.properties(vpath).get(base)
 
             if host_volume:
-                run_command.extend(('-v', '%s:%s' % (host_volume, volume)))
+                run_command.append('-v=%s:%s' % (host_volume, volume))
+
+        try:
+            env = zk.properties(path + '/environment')
+        except zc.zk.zookeeper.NoNodeException:
+            pass
+        else:
+            for name, value in env.items():
+                run_command.append('-e=%s=%s' % (name, value))
 
         run_command.append(image_spec)
         run_command = ' '.join(run_command)

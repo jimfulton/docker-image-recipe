@@ -1,5 +1,6 @@
 
 from zope.testing import setupstack
+import gc
 import unittest
 import manuel.capture
 import manuel.doctest
@@ -56,6 +57,10 @@ def setUp(test):
     client = FauxDockerClient()
     setupstack.context_manager(
         test, mock.patch("docker.Client", side_effect=lambda : client))
+
+    # WTF? Without this, tests hang due to a deadlock in gc
+    setupstack.register(test, gc.enable)
+    gc.disable()
 
 def test_suite():
     return unittest.TestSuite((
