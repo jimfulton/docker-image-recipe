@@ -5,10 +5,10 @@ import subprocess
 import zc.metarecipe
 import zc.zk
 
-class ZKRecipe(zc.metarecipe.Recipe):
+class Recipe(zc.metarecipe.Recipe):
 
     def __init__(self, buildout, name, options):
-        super(ZKRecipe, self).__init__(buildout, name, options)
+        super(Recipe, self).__init__(buildout, name, options)
 
         if not options:
             zk = zc.zk.ZK('zookeeper:2181')

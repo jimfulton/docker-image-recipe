@@ -15,8 +15,11 @@ From README.rst::
     >>> zk.import_tree(tree)
 
     >>> from zc.metarecipe.testing import Buildout
-    >>> from zc.dockerimage import ZKRecipe
-    >>> _ = ZKRecipe(Buildout(), 'my,application.0', {})
+    >>> import pkg_resources
+    >>> recipe = pkg_resources.load_entry_point(
+    ...     'zc.dockerimage', 'zc.buildout', 'default')
+
+    >>> _ = recipe(Buildout(), 'my,application.0', {})
     ... # doctest: +NORMALIZE_WHITESPACE
     [deployment]
     name = my,application.0
@@ -54,7 +57,7 @@ Here are some variations that use a short hand for all ports::
 .. -> tree
 
     >>> zk.import_tree(tree, trim=True)
-    >>> _ = ZKRecipe(Buildout(), 'my,application.0', {})
+    >>> _ = recipe(Buildout(), 'my,application.0', {})
     ... # doctest: +NORMALIZE_WHITESPACE
     [deployment]
     name = my,application.0
@@ -83,7 +86,7 @@ Here are some variations that use a short hand for all ports::
 .. -> tree
 
     >>> zk.import_tree(tree)
-    >>> _ = ZKRecipe(Buildout(), 'my,application.0', {})
+    >>> _ = recipe(Buildout(), 'my,application.0', {})
     ... # doctest: +NORMALIZE_WHITESPACE
     [deployment]
     name = my,application.0
@@ -118,7 +121,7 @@ We'll get an error if we refer to unexposed ports::
 .. -> tree
 
     >>> zk.import_tree(tree)
-    >>> _ = ZKRecipe(Buildout(), 'my,application.0', {}) # doctest: +ELLIPSIS
+    >>> _ = recipe(Buildout(), 'my,application.0', {}) # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
     AssertionError: ('port not exposed', 42, set([...]))
@@ -141,7 +144,7 @@ Here's an example with more involved volume mapping::
 .. -> tree
 
     >>> zk.import_tree(tree)
-    >>> _ = ZKRecipe(Buildout(), 'my,application.0', {})
+    >>> _ = recipe(Buildout(), 'my,application.0', {})
     ... # doctest: +NORMALIZE_WHITESPACE
     [deployment]
     name = my,application.0

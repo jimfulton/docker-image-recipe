@@ -81,6 +81,8 @@ Changes
 
 - Start and stop a local registry when pulling.
 
+- Fixed: missing recipe entry point
+
 0.1.0 (2013-11-20)
 ==================
 
