@@ -2,23 +2,18 @@ import docker
 import json
 import hashlib
 import zc.metarecipe
-
-standard_volumes = {
-    '/var/cache': '${deployment:cache-directory}',
-    '/var/lib': '${deployment:lib-directory}',
-    '/var/log': '${deployment:log-directory}',
-    '/var/run': '${deployment:run-directory}',
-    }
+import zc.zk
 
 class ZKRecipe(zc.metarecipe.Recipe):
 
     def __init__(self, buildout, name, options):
         super(ZKRecipe, self).__init__(buildout, name, options)
 
-        zk = self.zk = zc.zk.ZK('zookeeper:2181')
-
-        path = '/' + name.rsplit('.', 1)[0].replace(',', '/')
-        options = zk.properties(path)
+        if not options:
+            zk = zc.zk.ZK('zookeeper:2181')
+            path = '/' + name.rsplit('.', 1)[0].replace(',', '/')
+            options.update(flatten(zk, path))
+            zk.close()
 
         user = self.user = options.get('user', 'zope')
 
@@ -63,25 +58,11 @@ class ZKRecipe(zc.metarecipe.Recipe):
             for port in ports:
                 run_command.extend(('-p', port))
 
-        for volume in sorted(image['Volumes']):
-            prefix, base = volume.rsplit('/', 1)
-            try:
-                vpath = zk.resolve(path+'/volumes'+prefix)
-            except zc.zk.zookeeper.NoNodeException:
-                host_volume = standard_volumes.get(volume)
-            else:
-                host_volume = zk.properties(vpath).get(base)
-
-            if host_volume:
-                run_command.append('-v=%s:%s' % (host_volume, volume))
-
-        try:
-            env = zk.properties(path + '/environment')
-        except zc.zk.zookeeper.NoNodeException:
-            pass
-        else:
-            for name, value in env.items():
-                run_command.append('-e=%s=%s' % (name, value))
+        for option, value in sorted(options.items()):
+            if option.startswith('volumes/'):
+                run_command.append('-v=%s:%s' % (value, option[7:]))
+            elif option.startswith('environment/'):
+                run_command.append('-e=%s=%s' % (option[12:], value))
 
         run_command.append(image_spec)
         run_command = ' '.join(run_command)
@@ -143,3 +124,12 @@ def check_ports(ports, exposed):
     for port in ports:
         if str(port) not in exposed:
             raise AssertionError("port not exposed", port, exposed)
+
+def flatten(zk, path):
+    l = len(path)+1
+    for p in zk.walk(path):
+        prefix = p[l:]
+        if prefix:
+            prefix += '/'
+        for n, v in zk.properties(p).items():
+            yield (prefix + n, v)
