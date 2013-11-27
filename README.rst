@@ -75,6 +75,11 @@ deployment's log directory is mapped to the container's
 Changes
 *******
 
+0.2.1 (2013-11-27)
+==================
+
+Fixed: zookeeper-deploy script
+
 0.2.0 (2013-11-27)
 ==================
 
