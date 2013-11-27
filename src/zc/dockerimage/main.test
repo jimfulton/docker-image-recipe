@@ -24,7 +24,7 @@ From README.rst::
     [deployment]
     name = my,application.0
     recipe = zc.recipe.deployment
-    user = zope
+    user = root
     [container]
     deployment = deployment
     program = /usr/bin/docker run -rm
@@ -62,7 +62,7 @@ Here are some variations that use a short hand for all ports::
     [deployment]
     name = my,application.0
     recipe = zc.recipe.deployment
-    user = zope
+    user = root
     [container]
     deployment = deployment
     program = /usr/bin/docker run -rm -P fooimage:1.0
@@ -91,7 +91,7 @@ Here are some variations that use a short hand for all ports::
     [deployment]
     name = my,application.0
     recipe = zc.recipe.deployment
-    user = zope
+    user = root
     [container]
     deployment = deployment
     program = /usr/bin/docker run -rm -p 20:20 -p 21:21 -p 24:24
@@ -149,7 +149,7 @@ Here's an example with more involved volume mapping::
     [deployment]
     name = my,application.0
     recipe = zc.recipe.deployment
-    user = zope
+    user = root
     [container]
     deployment = deployment
     program = /usr/bin/docker run -rm -p 8080

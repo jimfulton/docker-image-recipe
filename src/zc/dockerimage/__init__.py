@@ -16,7 +16,7 @@ class Recipe(zc.metarecipe.Recipe):
             options.update(flatten(zk, path))
             zk.close()
 
-        user = self.user = options.get('user', 'zope')
+        user = self.user = options.get('user', 'root')
 
         self['deployment'] = dict(
             recipe = 'zc.recipe.deployment',

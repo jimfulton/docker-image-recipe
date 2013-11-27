@@ -86,6 +86,11 @@ Changes
 - Fixed: generated program lines lacked -rm options to remove
   containers after running images.
 
+- Fixed: didn't work with docker 0.6.4 because of meta-data
+  differences.
+
+- Fixed: didn't run as root by default
+
 0.1.0 (2013-11-20)
 ==================
 
