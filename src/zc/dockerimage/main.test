@@ -27,7 +27,7 @@ From README.rst::
     user = zope
     [container]
     deployment = deployment
-    program = /usr/bin/docker run
+    program = /usr/bin/docker run -rm
      -p 8080:8080
      -p 8000:9000 -p 8001:9001 -p 8002:9002 -p 8003:9003 -p 8004:9004
      -p 8005:9005 -p 8006:9006 -p 8007:9007 -p 8008:9008 -p 8009:9009
@@ -41,7 +41,7 @@ From README.rst::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 6ef20fd33938dc80808267a1a8adfd7a
+    digest = 76a66f86d4cb83d10f09cdc8c6bb6f7f
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -65,12 +65,12 @@ Here are some variations that use a short hand for all ports::
     user = zope
     [container]
     deployment = deployment
-    program = /usr/bin/docker run -P fooimage:1.0
+    program = /usr/bin/docker run -rm -P fooimage:1.0
     recipe = zc.zdaemonrecipe
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 2d37990dfa5fac1d5c6244dfce5ed0b3
+    digest = 54400ebbe592c66744d252e808c72b48
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -94,7 +94,7 @@ Here are some variations that use a short hand for all ports::
     user = zope
     [container]
     deployment = deployment
-    program = /usr/bin/docker run -p 20:20 -p 21:21 -p 24:24
+    program = /usr/bin/docker run -rm -p 20:20 -p 21:21 -p 24:24
      -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 -p 3004:3004
      -p 3005:3005 -p 3006:3006 -p 3007:3007 -p 3008:3008 -p 3009:3009
      -p 32:32 -p 8080:8080 -p 8081:8081
@@ -105,7 +105,7 @@ Here are some variations that use a short hand for all ports::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 6bd083886ec0460693d007d964ef70e9
+    digest = 16bd33be54120f3993bc9f5ab7c639e6
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -152,7 +152,7 @@ Here's an example with more involved volume mapping::
     user = zope
     [container]
     deployment = deployment
-    program = /usr/bin/docker run -p 8080
+    program = /usr/bin/docker run -rm -p 8080
      -v=/mnt/ftp:/home/ftp
      -v=/mnt/svn:/svn
      -v=${deployment:log-directory}:/var/log/myapp
@@ -161,7 +161,7 @@ Here's an example with more involved volume mapping::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 4032a4fedbaf03b3dad4bd0031ebf1b3
+    digest = 154b4933efac4628fc002ea6de3a58db
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc

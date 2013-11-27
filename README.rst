@@ -83,6 +83,9 @@ Changes
 
 - Fixed: missing recipe entry point
 
+- Fixed: generated program lines lacked -rm options to remove
+  containers after running images.
+
 0.1.0 (2013-11-20)
 ==================
 

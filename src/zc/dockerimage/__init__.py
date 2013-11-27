@@ -63,7 +63,7 @@ class Recipe(zc.metarecipe.Recipe):
 
         image = client.inspect_image(image['Id'])['container_config']
 
-        run_command = ['/usr/bin/docker', 'run']
+        run_command = ['/usr/bin/docker run -rm']
 
         ports = options.get('ports', ())
         if ports == '*':
