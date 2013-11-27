@@ -22,8 +22,8 @@ class FauxDockerClient:
         ("fooimage", "1.0"): dict(
             Id="42",
             container_config=dict(
-                ExposedPorts = dict(
-                    ("%s/tcp" % p, {}) for p in
+                PortSpecs = dict(
+                    ("%s" % p, {}) for p in
                     ([20, 21, 32, 24, 8080, 8081] +
                      range(9000, 9010) + range(3000,3010))
                     ),
@@ -34,7 +34,7 @@ class FauxDockerClient:
         ("barimage", "0.1.0"): dict(
             Id="4242",
             container_config=dict(
-                ExposedPorts = dict(("%s/tcp" % p, {}) for p in [8080]),
+                PortSpecs = dict(("%s" % p, {}) for p in [8080]),
                 Volumes = dict((path, {}) for path in [
                     "/var/log/myapp", "/var/run", "/svn", "/home/ftp"])
                 )
