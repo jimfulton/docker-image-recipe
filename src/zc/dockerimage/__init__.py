@@ -72,11 +72,16 @@ class Recipe(zc.metarecipe.Recipe):
             if ports == '=:*':
                 ports = ['%s:%s' % (port, port)
                          for port in sorted(
-                             parse_exposed(image['ExposedPorts']))
+                             image['PortSpecs']
+                             # 0.7: parse_exposed(image['ExposedPorts'])
+                             )
                          ]
             else:
                 ports = parse_ports(
-                    ports, set(parse_exposed(image['ExposedPorts'])))
+                    ports, set(
+                        image['PortSpecs']
+                        # 0.7: parse_exposed(image['ExposedPorts'])
+                        ))
 
             for port in ports:
                 run_command.extend(('-p', port))
