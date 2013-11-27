@@ -75,6 +75,9 @@ deployment's log directory is mapped to the container's
 Changes
 *******
 
+0.2.0 (2013-11-27)
+==================
+
 - Added environment variable support.
 
 - Made volume mapping purely explicit.
