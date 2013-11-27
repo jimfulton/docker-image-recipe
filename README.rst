@@ -52,23 +52,7 @@ mapped.
 Note that host ports are exposed on all interfaces. In the future,
 support for sepcifying interfaces will likely be added.
 
-If the image defines volumes, some volumes will be automatically
-mapped to deployment-specific locations, **if** they're present in the
-defined volumes:
-
-  /var/cache
-    ${deployment:cache-directory}
-
-  /var/lib
-    ${deployment:lib-directory}
-
-  /var/log
-    ${deployment:log-directory}
-
-  /var/run
-    ${deployment:run-directory}
-
-You can define additional mappings by providing a volumes subnode::
+You can define volume mappings by providing a volumes subnode::
 
   /my
     /application: dockerimage
@@ -81,17 +65,34 @@ You can define additional mappings by providing a volumes subnode::
         /var
           /log
             myapp = "${deployment:log-directory}
-          run = None
 
 In this example, the host's ``/mnt/svn`` directory is mapped to the
 container's ``/svn`` directory and the host's ``/mnt/ftp`` directory
 is mapped to the container's ``/home/ftp`` directory.  The
 deployment's log directory is mapped to the container's
-``/var/log/myapp`` directory.  The automatic mapping of the
-container's ``/var/run`` directory is disabled.
+``/var/log/myapp`` directory.
 
 Changes
 *******
+
+0.2.0 (2013-11-27)
+==================
+
+- Added environment variable support.
+
+- Made volume mapping purely explicit.
+
+- Start and stop a local registry when pulling.
+
+- Fixed: missing recipe entry point
+
+- Fixed: generated program lines lacked -rm options to remove
+  containers after running images.
+
+- Fixed: didn't work with docker 0.6.4 because of meta-data
+  differences.
+
+- Fixed: didn't run as root by default
 
 0.1.0 (2013-11-20)
 ==================

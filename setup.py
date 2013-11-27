@@ -18,7 +18,9 @@ install_requires = [
 extras_require = dict(test=['manuel', 'mock', 'zope.testing'])
 
 entry_points = """
-"""
+[zc.buildout]
+default = %s:Recipe
+""" % name
 
 from setuptools import setup
 

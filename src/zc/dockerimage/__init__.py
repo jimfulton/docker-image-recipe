@@ -1,26 +1,22 @@
 import docker
 import json
 import hashlib
+import subprocess
 import zc.metarecipe
+import zc.zk
 
-standard_volumes = {
-    '/var/cache': '${deployment:cache-directory}',
-    '/var/lib': '${deployment:lib-directory}',
-    '/var/log': '${deployment:log-directory}',
-    '/var/run': '${deployment:run-directory}',
-    }
-
-class ZKRecipe(zc.metarecipe.Recipe):
+class Recipe(zc.metarecipe.Recipe):
 
     def __init__(self, buildout, name, options):
-        super(ZKRecipe, self).__init__(buildout, name, options)
+        super(Recipe, self).__init__(buildout, name, options)
 
-        zk = self.zk = zc.zk.ZK('zookeeper:2181')
+        if not options:
+            zk = zc.zk.ZK('zookeeper:2181')
+            path = '/' + name.rsplit('.', 1)[0].replace(',', '/')
+            options.update(flatten(zk, path))
+            zk.close()
 
-        path = '/' + name.rsplit('.', 1)[0].replace(',', '/')
-        options = zk.properties(path)
-
-        user = self.user = options.get('user', 'zope')
+        user = self.user = options.get('user', 'root')
 
         self['deployment'] = dict(
             recipe = 'zc.recipe.deployment',
@@ -35,17 +31,39 @@ class ZKRecipe(zc.metarecipe.Recipe):
 
         images = [image for image in client.images(image_name)
                   if image['Tag'] == tag]
+
         if not images:
-            client.pull(image_name, tag=tag)
-            images = [image for image in client.images(image_name)
+            container = client.create_container(
+                'registry',
+                '/docker-registry/run.sh',
+                environment=dict(SETTINGS_FLAVOR='prod'),
+                detach=True,
+                ports=["5000/tcp"])
+            try:
+                client.start(container)
+                try:
+                    port = client.inspect_container(
+                        container
+                        )['NetworkSettings']['PortMapping']['Tcp']['5000']
+                    repo_name = "127.0.0.1:%s/%s" % (port, image_name)
+                    client.pull(repo_name, tag=tag)
+                finally:
+                    client.stop(container)
+            finally:
+                client.remove_container(container)
+
+            images = [image for image in client.images(repo_name)
                       if tag is None or image['Tag'] == tag]
             if not images:
                 raise ValueError("Couldn't pull", image_spec)
+            [image] = images
+            client.tag(image['Id'], image_name, tag)
+        else:
+            [image] = images
 
-        [image] = images
         image = client.inspect_image(image['Id'])['container_config']
 
-        run_command = ['/usr/bin/docker', 'run']
+        run_command = ['/usr/bin/docker run -rm']
 
         ports = options.get('ports', ())
         if ports == '*':
@@ -54,26 +72,25 @@ class ZKRecipe(zc.metarecipe.Recipe):
             if ports == '=:*':
                 ports = ['%s:%s' % (port, port)
                          for port in sorted(
-                             parse_exposed(image['ExposedPorts']))
+                             image['PortSpecs']
+                             # 0.7: parse_exposed(image['ExposedPorts'])
+                             )
                          ]
             else:
                 ports = parse_ports(
-                    ports, set(parse_exposed(image['ExposedPorts'])))
+                    ports, set(
+                        image['PortSpecs']
+                        # 0.7: parse_exposed(image['ExposedPorts'])
+                        ))
 
             for port in ports:
                 run_command.extend(('-p', port))
 
-        for volume in sorted(image['Volumes']):
-            prefix, base = volume.rsplit('/', 1)
-            try:
-                vpath = zk.resolve(path+'/volumes'+prefix)
-            except zc.zk.zookeeper.NoNodeException:
-                host_volume = standard_volumes.get(volume)
-            else:
-                host_volume = zk.properties(vpath).get(base)
-
-            if host_volume:
-                run_command.extend(('-v', '%s:%s' % (host_volume, volume)))
+        for option, value in sorted(options.items()):
+            if option.startswith('volumes/'):
+                run_command.append('-v=%s:%s' % (value, option[7:]))
+            elif option.startswith('environment/'):
+                run_command.append('-e=%s=%s' % (option[12:], value))
 
         run_command.append(image_spec)
         run_command = ' '.join(run_command)
@@ -135,3 +152,12 @@ def check_ports(ports, exposed):
     for port in ports:
         if str(port) not in exposed:
             raise AssertionError("port not exposed", port, exposed)
+
+def flatten(zk, path):
+    l = len(path)+1
+    for p in zk.walk(path):
+        prefix = p[l:]
+        if prefix:
+            prefix += '/'
+        for n, v in zk.properties(p).items():
+            yield (prefix + n, v)
