@@ -75,6 +75,11 @@ deployment's log directory is mapped to the container's
 Changes
 *******
 
+0.2.4 (2013-11-27)
+==================
+
+Fixed: recipe dependencies
+
 0.2.3 (2013-11-27)
 ==================
 
