@@ -41,7 +41,7 @@ class FauxDockerClient:
             ),
         }
 
-    container = port = _registry_started = None
+    container = port = _registry_started = slept = None
 
     def __init__(self):
         self._images = []
@@ -62,6 +62,7 @@ class FauxDockerClient:
         self.container['NetworkSettings'] = dict(
             PortMapping=dict(Tcp={'5000': self.port}))
         self._registry_started = True
+        self.slept = None
 
     def stop(self, container):
         assert_(container is self.container)
@@ -80,8 +81,12 @@ class FauxDockerClient:
     def images(self, name):
         return [image for image in self._images if image['Repository'] == name]
 
+    def sleep(self, v):
+        self.slept = v
+
     def pull(self, full_name, tag):
         assert_(self._registry_started)
+        assert_(self.slept == 9)
         assert_(full_name.startswith('127.0.0.1:%s/' % self.port))
         name = full_name.split('/')[1]
         image = self.available.get((name, tag))
@@ -102,6 +107,8 @@ def setUp(test):
     client = FauxDockerClient()
     setupstack.context_manager(
         test, mock.patch("docker.Client", side_effect=lambda : client))
+    setupstack.context_manager(
+        test, mock.patch("time.sleep", side_effect=client.sleep))
 
 def test_suite():
     return unittest.TestSuite((

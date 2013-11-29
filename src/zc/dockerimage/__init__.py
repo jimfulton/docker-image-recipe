@@ -2,6 +2,7 @@ import docker
 import json
 import hashlib
 import subprocess
+import time
 import zc.metarecipe
 import zc.zk
 
@@ -10,7 +11,7 @@ class Recipe(zc.metarecipe.Recipe):
     def __init__(self, buildout, name, options):
         super(Recipe, self).__init__(buildout, name, options)
 
-        if not options:
+        if len(options) < 2:
             zk = zc.zk.ZK('zookeeper:2181')
             path = '/' + name.rsplit('.', 1)[0].replace(',', '/')
             options.update(flatten(zk, path))
@@ -46,6 +47,7 @@ class Recipe(zc.metarecipe.Recipe):
                         container
                         )['NetworkSettings']['PortMapping']['Tcp']['5000']
                     repo_name = "127.0.0.1:%s/%s" % (port, image_name)
+                    time.sleep(9) # give registry plenty of time to start
                     client.pull(repo_name, tag=tag)
                 finally:
                     client.stop(container)
@@ -160,4 +162,6 @@ def flatten(zk, path):
         if prefix:
             prefix += '/'
         for n, v in zk.properties(p).items():
+            if isinstance(v, unicode):
+                v = str(v)
             yield (prefix + n, v)

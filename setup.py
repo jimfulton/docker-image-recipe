@@ -15,7 +15,7 @@ name, version = 'zc.dockerimage', '0'
 
 install_requires = [
     'setuptools', 'zc.metarecipe', 'zc.zk [static]', 'docker-py',
-    'zc.recipe.deployment', 'zc.zdaemonrecipe', 'zc.recipe.rhrc']
+    'zc.recipe.deployment', 'zc.zdaemonrecipe', 'zc.recipe.rhrc', 'zdaemon']
 extras_require = dict(test=['manuel', 'mock', 'zope.testing'])
 
 entry_points = """

@@ -19,7 +19,8 @@ From README.rst::
     >>> recipe = pkg_resources.load_entry_point(
     ...     'zc.dockerimage', 'zc.buildout', 'default')
 
-    >>> _ = recipe(Buildout(), 'my,application.0', {})
+    >>> _ = recipe(Buildout(), 'my,application.0',
+    ...            dict(recipe='zc.dockerimage'))
     ... # doctest: +NORMALIZE_WHITESPACE
     [deployment]
     name = my,application.0

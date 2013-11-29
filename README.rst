@@ -75,6 +75,16 @@ deployment's log directory is mapped to the container's
 Changes
 *******
 
+0.2.5 (2013-11-29)
+==================
+
+Fixed: Missing dependency, zdaemon
+
+Fixed: Failed to work with zkdeploy because test for getting options
+       from ZooKeeper was incorrect.
+
+Fixed: Unicode was leaking through to buildout.
+
 0.2.4 (2013-11-27)
 ==================
 
