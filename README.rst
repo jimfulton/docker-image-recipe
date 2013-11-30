@@ -75,6 +75,11 @@ deployment's log directory is mapped to the container's
 Changes
 *******
 
+0.2.8 (2013-11-30)
+==================
+
+Fixed: incorrect docker path
+
 0.2.7 (2013-11-30)
 ==================
 
