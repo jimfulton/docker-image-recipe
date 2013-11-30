@@ -1,5 +1,5 @@
 Name: dockerimage
-Version: 0
+Version: 0.2.6
 Release: 1
 
 Summary: %{name}
