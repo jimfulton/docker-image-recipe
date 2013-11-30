@@ -4,7 +4,7 @@ Release: 1
 
 Summary: %{name}
 Group: Applications/ZC
-Requires: cleanpython27 = 2.7.3
+Requires: cleanpython27 = 2.7.5
 Requires: registry = 0.1
 BuildRequires: cleanpython27
 %define python /opt/cleanpython27/bin/python
