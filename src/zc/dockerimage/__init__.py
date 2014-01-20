@@ -73,7 +73,7 @@ class Recipe(zc.metarecipe.Recipe):
         if n != '0':
             hostname = 'n%s.%s' % (n, hostname)
         hostname += ".o-o." + socket.getfqdn()
-        run_command.append("-lxc-conf lxc.utsname="+hostname)
+        run_command.append("-h "+hostname)
 
         ports = options.get('ports', ())
         if ports == '*':

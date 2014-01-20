@@ -29,7 +29,7 @@ From README.rst::
     [container]
     deployment = deployment
     program = docker run -rm
-     -lxc-conf lxc.utsname=application.my.o-o.app42.example.com
+     -h application.my.o-o.app42.example.com
      -p 8080:8080
      -p 8000:9000 -p 8001:9001 -p 8002:9002 -p 8003:9003 -p 8004:9004
      -p 8005:9005 -p 8006:9006 -p 8007:9007 -p 8008:9008 -p 8009:9009
@@ -43,7 +43,7 @@ From README.rst::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = b87872b915bf8a45c27e741330410191
+    digest = aa5c9b11344ff56beda6e7d349b9283e
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -68,13 +68,13 @@ Here are some variations that use a short hand for all ports::
     [container]
     deployment = deployment
     program = docker run -rm
-      -lxc-conf lxc.utsname=n1.application.my.o-o.app42.example.com
+      -h n1.application.my.o-o.app42.example.com
       -P fooimage:1.0
     recipe = zc.zdaemonrecipe
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 746bcc53a0ac0bf9248cd5e6b63fab96
+    digest = bb4d5712d710d7f749fd3173c1b68794
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -99,7 +99,7 @@ Here are some variations that use a short hand for all ports::
     [container]
     deployment = deployment
     program = docker run -rm
-     -lxc-conf lxc.utsname=application.my.o-o.app42.example.com
+     -h application.my.o-o.app42.example.com
      -p 20:20 -p 21:21 -p 24:24
      -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 -p 3004:3004
      -p 3005:3005 -p 3006:3006 -p 3007:3007 -p 3008:3008 -p 3009:3009
@@ -111,7 +111,7 @@ Here are some variations that use a short hand for all ports::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 129127f5298649c7223d6b27d26b39ac
+    digest = a7ab19998c28dc1a1c795b4a9a15d509
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -159,7 +159,7 @@ Here's an example with more involved volume mapping::
     [container]
     deployment = deployment
     program = docker run -rm
-     -lxc-conf lxc.utsname=application.my.o-o.app42.example.com
+     -h application.my.o-o.app42.example.com
      -p 8080
      -v=/mnt/ftp:/home/ftp
      -v=/mnt/svn:/svn
@@ -169,7 +169,7 @@ Here's an example with more involved volume mapping::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = bf0d6d49db7494762456a33dc04cc421
+    digest = 718c7081f57b6ffe0a9b8a0a847f7689
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
