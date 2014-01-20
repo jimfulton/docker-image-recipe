@@ -109,6 +109,9 @@ def setUp(test):
         test, mock.patch("docker.Client", side_effect=lambda : client))
     setupstack.context_manager(
         test, mock.patch("time.sleep", side_effect=client.sleep))
+    setupstack.context_manager(
+        test, mock.patch("socket.getfqdn",
+                         side_effect=lambda : 'app42.example.com'))
 
 def test_suite():
     return unittest.TestSuite((
