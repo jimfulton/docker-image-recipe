@@ -1,6 +1,7 @@
 import docker
 import json
 import hashlib
+import socket
 import subprocess
 import time
 import zc.metarecipe
@@ -66,6 +67,13 @@ class Recipe(zc.metarecipe.Recipe):
         image = client.inspect_image(image['Id'])['container_config']
 
         run_command = ['docker run -rm']
+
+        hostname = '.'.join(reversed(name.rsplit('.', 1)[0].split(',')))
+        n = name.rsplit('.', 1)[1]
+        if n != '0':
+            hostname = 'n%s.%s' % (n, hostname)
+        hostname += ".o-o." + socket.getfqdn()
+        run_command.append("-lxc-conf lxc.utsname="+hostname)
 
         ports = options.get('ports', ())
         if ports == '*':

@@ -29,6 +29,7 @@ From README.rst::
     [container]
     deployment = deployment
     program = docker run -rm
+     -lxc-conf lxc.utsname=application.my.o-o.app42.example.com
      -p 8080:8080
      -p 8000:9000 -p 8001:9001 -p 8002:9002 -p 8003:9003 -p 8004:9004
      -p 8005:9005 -p 8006:9006 -p 8007:9007 -p 8008:9008 -p 8009:9009
@@ -42,7 +43,7 @@ From README.rst::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 8661342f08ce3a7ea459f2f9ae684c5a
+    digest = b87872b915bf8a45c27e741330410191
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -58,20 +59,22 @@ Here are some variations that use a short hand for all ports::
 .. -> tree
 
     >>> zk.import_tree(tree, trim=True)
-    >>> _ = recipe(Buildout(), 'my,application.0', {})
+    >>> _ = recipe(Buildout(), 'my,application.1', {})
     ... # doctest: +NORMALIZE_WHITESPACE
     [deployment]
-    name = my,application.0
+    name = my,application.1
     recipe = zc.recipe.deployment
     user = root
     [container]
     deployment = deployment
-    program = docker run -rm -P fooimage:1.0
+    program = docker run -rm
+      -lxc-conf lxc.utsname=n1.application.my.o-o.app42.example.com
+      -P fooimage:1.0
     recipe = zc.zdaemonrecipe
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = b856165d64b589b4d89d7fdc0169a9ce
+    digest = 746bcc53a0ac0bf9248cd5e6b63fab96
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -95,7 +98,9 @@ Here are some variations that use a short hand for all ports::
     user = root
     [container]
     deployment = deployment
-    program = docker run -rm -p 20:20 -p 21:21 -p 24:24
+    program = docker run -rm
+     -lxc-conf lxc.utsname=application.my.o-o.app42.example.com
+     -p 20:20 -p 21:21 -p 24:24
      -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 -p 3004:3004
      -p 3005:3005 -p 3006:3006 -p 3007:3007 -p 3008:3008 -p 3009:3009
      -p 32:32 -p 8080:8080 -p 8081:8081
@@ -106,7 +111,7 @@ Here are some variations that use a short hand for all ports::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 002df1144499579dc688d6f1eb0074e6
+    digest = 129127f5298649c7223d6b27d26b39ac
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
@@ -153,7 +158,9 @@ Here's an example with more involved volume mapping::
     user = root
     [container]
     deployment = deployment
-    program = docker run -rm -p 8080
+    program = docker run -rm
+     -lxc-conf lxc.utsname=application.my.o-o.app42.example.com
+     -p 8080
      -v=/mnt/ftp:/home/ftp
      -v=/mnt/svn:/svn
      -v=${deployment:log-directory}:/var/log/myapp
@@ -162,7 +169,7 @@ Here's an example with more involved volume mapping::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 1debc03bc13d00b8b60d9a81859e5265
+    digest = bf0d6d49db7494762456a33dc04cc421
     parts = container
     process-management = true
     recipe = zc.recipe.rhrc
