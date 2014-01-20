@@ -75,6 +75,9 @@ deployment's log directory is mapped to the container's
 Changes
 *******
 
+0.3.0 (2014-01-20)
+==================
+
 When starting containers, pass lxc configuration to set a host name
 for a container based on the host's host name and the ZooKeeper path.
 
